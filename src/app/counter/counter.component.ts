@@ -1,6 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { CounterService, Operations } from './counter.service';
+import { Counter } from './counter.model';
+import { Operations } from './shared/enums';
 
 @Component({
   selector: 'app-counter',
@@ -12,10 +14,10 @@ export class CounterComponent implements OnDestroy {
   unsubscribe$: Subject<void> = new Subject();
   operation: typeof Operations = Operations;
 
-  constructor(private counterService: CounterService) {
-    this.counterService.resultHandler$
+  constructor(private store: Store<Counter>) {
+    this.store
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((data) => (this.result = data));
+      .subscribe((data: Counter) => (this.result = data.counter));
   }
 
   ngOnDestroy(): void {
@@ -23,7 +25,4 @@ export class CounterComponent implements OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  updateResult(value:any): void {
-    this.counterService.recalculate(value);
-  }
 }

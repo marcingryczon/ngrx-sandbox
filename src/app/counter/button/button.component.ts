@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Operations } from '../counter.service';
+import { Store } from '@ngrx/store';
+import { decrement, increment } from '../counter.actions';
+import { Operations } from '../shared/enums';
 
 @Component({
   selector: 'app-button',
@@ -9,19 +11,20 @@ import { Operations } from '../counter.service';
 export class ButtonComponent {
 
   @Input() operation!: Operations;
-  @Output() updateResult: EventEmitter<Operations> = new EventEmitter<Operations>();
   
   public get getSign() : string {
     return this.operation === Operations.INCREMENT ? '+' : '-';
   }
+  
+  constructor(private store: Store<number>){}
 
   update(operation: Operations): void {
     switch(operation){
-      case Operations.INCREMENT: 
-        this.updateResult.emit(Operations.INCREMENT);
+      case Operations.INCREMENT:
+        this.store.dispatch(increment())
         break;
-      case Operations.DECREMENT: 
-        this.updateResult.emit(Operations.DECREMENT);
+        case Operations.DECREMENT: 
+        this.store.dispatch(decrement())
         break; 
     }
   }
