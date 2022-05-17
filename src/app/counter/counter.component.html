@@ -1,5 +1,5 @@
-<div class="container">
-  <app-button [operation]="operation.DECREMENT"></app-button>
-  <app-result [result] = result></app-result>
-  <app-button [operation]="operation.INCREMENT"></app-button>
+<div *ngIf="result$ | async as result" class="container">
+    <app-button [operation]="operation.DECREMENT"></app-button>
+    <app-result [result] = result></app-result>
+    <app-button [operation]="operation.INCREMENT"></app-button>
 </div>

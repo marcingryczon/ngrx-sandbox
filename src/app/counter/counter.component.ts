@@ -1,7 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Component } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { Counter } from './counter.model';
+import { counterValue } from './counter.selectors';
 import { Operations } from './shared/enums';
 
 @Component({
@@ -9,20 +10,11 @@ import { Operations } from './shared/enums';
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.scss'],
 })
-export class CounterComponent implements OnDestroy {
-  result!: number;
-  unsubscribe$: Subject<void> = new Subject();
+export class CounterComponent {
+  result$!: Observable<string>;
   operation: typeof Operations = Operations;
 
   constructor(private store: Store<Counter>) {
-    this.store
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((data: Counter) => (this.result = data.counter));
+    this.result$ = this.store.pipe(select(counterValue));
   }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
 }
